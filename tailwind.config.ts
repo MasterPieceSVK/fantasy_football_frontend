@@ -1,3 +1,4 @@
+import { BioRhyme } from "next/font/google";
 import type { Config } from "tailwindcss";
 
 const config: Config = {
@@ -15,6 +16,19 @@ const config: Config = {
       },
     },
   },
-  plugins: [],
+  plugins: [require("daisyui")],
+  daisyui: {
+    themes: [
+      {
+        mytheme: {
+          primary: "#EEEEEE",
+          secondary: "#31363F",
+          accent: "#76ABAE",
+          neutral: "#3d4451",
+          "base-100": "#222831",
+        },
+      },
+    ],
+  },
 };
 export default config;
