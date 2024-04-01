@@ -25,10 +25,10 @@ export default function RootLayout({
         <Provider>
           <div className="flex flex-col h-full">
             <Nav />
-            <div className="flex h-[95%]">
-              <Sidebar />
-              <div className=" w-[90%]">{children}</div>
-            </div>
+            <main className="flex h-[95%]">
+              {/* <Sidebar /> */}
+              <div className=" w-full">{children}</div>
+            </main>
           </div>
         </Provider>
       </body>

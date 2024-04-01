@@ -1,5 +1,8 @@
+"use client";
 import Home from "@/app/page";
 import HomeFeatures from "./HomeFeatures";
+import Link from "next/link";
+import { useEffect } from "react";
 
 export default function Hero() {
   return (
@@ -12,9 +15,11 @@ export default function Hero() {
           <p className="text-xl mb-3">
             Enjoy betting on football matches without spending real money!
           </p>
-          <button className="btn btn-outline btn-wide border-red-500 text-red-500 hover:bg-red-700 hover:border-red-700 hover:text-white text-2xl">
-            Play
-          </button>
+          <Link href={"/login"}>
+            <button className="btn btn-outline btn-wide border-red-500 text-red-500 hover:bg-red-700 hover:border-red-700 hover:text-white text-2xl">
+              Play
+            </button>
+          </Link>
         </div>
       </div>
       <HomeFeatures />

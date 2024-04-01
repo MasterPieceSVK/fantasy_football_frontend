@@ -4,7 +4,7 @@ import axios, { AxiosResponse } from "axios";
 import { jwtDecode } from "jwt-decode";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 // import jwt_decode from "jwt-decode";
 
 type userData = {
@@ -14,7 +14,12 @@ type userData = {
 export default function Nav() {
   const router = useRouter();
   const [username, setUsername] = useState("");
-  const [token, setToken] = useState(localStorage.getItem("token"));
+  const [token, setToken] = useState("");
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    setToken(token ?? "");
+  }, []);
 
   useEffect(() => {
     if (token) {

@@ -2,10 +2,19 @@
 
 import LoginCard from "@/components/LoginCard";
 import RegisterCard from "@/components/RegisterCard";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function Page() {
   const [showLogin, setShowLogin] = useState(true);
+
+  const router = useRouter();
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      router.push("/dashboard");
+    }
+  }, []);
 
   return (
     <div className="flex justify-center items-center ">
