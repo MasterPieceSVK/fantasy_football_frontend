@@ -7,49 +7,49 @@ import { useRouter } from "next/navigation";
 import { use, useEffect, useState } from "react";
 // import jwt_decode from "jwt-decode";
 
-type userData = {
-  username: string;
-};
+// type userData = {
+//   username: string;
+// };
 
 export default function Nav() {
-  const router = useRouter();
-  const [username, setUsername] = useState("");
-  const [token, setToken] = useState("");
+  // const router = useRouter();
+  // const [username, setUsername] = useState("");
+  // const [token, setToken] = useState("");
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    setToken(token ?? "");
-  }, []);
+  // useEffect(() => {
+  //   const token = localStorage.getItem("token");
+  //   setToken(token ?? "");
+  // }, []);
 
-  useEffect(() => {
-    if (token) {
-      const { username: token_username } = jwtDecode<userData>(token);
-      setUsername(token_username);
-    }
-  }, [token]);
+  // useEffect(() => {
+  //   if (token) {
+  //     const { username: token_username } = jwtDecode<userData>(token);
+  //     setUsername(token_username);
+  //   }
+  // }, [token]);
 
   // type userInfo = {
   //   username: string;
   // };
 
-  if (!token) {
-    return (
-      <div className="h-[5%] flex justify-end py-4 pr-5">
-        <ul className="flex gap-4">
-          <li>
-            <Link href={"/login"}>
-              <button className="btn btn-ghost">Login</button>
-            </Link>
-          </li>
-          <li>
-            <Link href={"/register"}>
-              <button className="btn btn-ghost">Register</button>
-            </Link>
-          </li>
-        </ul>
-      </div>
-    );
-  }
+  // if (!token) {
+  return (
+    <div className="h-[5%] flex justify-end py-4 pr-5">
+      <ul className="flex gap-4">
+        <li>
+          <Link href={"/login"}>
+            <button className="btn btn-ghost">Login</button>
+          </Link>
+        </li>
+        <li>
+          <Link href={"/register"}>
+            <button className="btn btn-ghost">Register</button>
+          </Link>
+        </li>
+      </ul>
+    </div>
+  );
+  // }
 
   // const userInfoQuery = useQuery<AxiosResponse, Error>({
   //   queryKey: ["userInfo"],
@@ -61,30 +61,30 @@ export default function Nav() {
   //   },
   // });
 
-  function handleLogout() {
-    setToken("");
-    localStorage.removeItem("token");
-    router.push("/");
-  }
-  return (
-    <div className="h-[5%] flex justify-end py-4 pr-5">
-      <div className="dropdown dropdown-end">
-        <div tabIndex={0} role="button" className="btn m-1">
-          {username}
-          {/* {userInfoQuery.username} */}
-        </div>
-        <ul
-          tabIndex={0}
-          className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52"
-        >
-          <li>
-            <Link href={"/profile"}>Profile</Link>
-          </li>
-          <li>
-            <button onClick={handleLogout}>Logout</button>
-          </li>
-        </ul>
-      </div>
-    </div>
-  );
+  // function handleLogout() {
+  //   setToken("");
+  //   localStorage.removeItem("token");
+  //   router.push("/");
+  // }
+  // return (
+  //   <div className="h-[5%] flex justify-end py-4 pr-5">
+  //     <div className="dropdown dropdown-end">
+  //       <div tabIndex={0} role="button" className="btn m-1">
+  //         {username}
+  //         {/* {userInfoQuery.username} */}
+  //       </div>
+  //       <ul
+  //         tabIndex={0}
+  //         className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52"
+  //       >
+  //         <li>
+  //           <Link href={"/profile"}>Profile</Link>
+  //         </li>
+  //         <li>
+  //           <button onClick={handleLogout}>Logout</button>
+  //         </li>
+  //       </ul>
+  //     </div>
+  //   </div>
+  // );
 }

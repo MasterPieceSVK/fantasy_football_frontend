@@ -25,7 +25,7 @@ export default function FinishedMatchCard(props: Match) {
 
         <h5>{formattedDateTime}</h5>
       </div>
-      <div className="flex justify-evenly items-center">
+      <div className="flex justify-evenly items-center bg-blue-500/20 rounded-xl p-3">
         <h5
           className={`${
             props.score_home > props.score_away &&

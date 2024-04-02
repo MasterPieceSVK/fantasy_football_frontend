@@ -9,7 +9,7 @@ import BurgerIcon from "./icons/BurgerIcon";
 import { usePathname } from "next/navigation";
 import FinsihedIcon from "./icons/FinishedIcon";
 
-export default function Sidebar() {
+export default function Sidebar({ user }: { user: string }) {
   const pathName = usePathname();
 
   return (
@@ -93,15 +93,16 @@ export default function Sidebar() {
               </button>
             </Link>
           </li>
-          <li>
+
+          <li className="mt-auto">
             <Link href={"/profile"}>
               <button
                 className={`btn btn-ghost btn-wide text-black text-xl ${
                   pathName == "/profile" && "bg-gray-400"
                 }`}
               >
-                {" "}
-                <SettingsIcon /> Account Settings
+                <SettingsIcon />
+                {user}
               </button>
             </Link>
           </li>

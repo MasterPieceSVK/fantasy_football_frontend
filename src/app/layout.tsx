@@ -22,15 +22,7 @@ export default function RootLayout({
         data-theme="mytheme"
         className={`${biorhyme.className} bg-base-100 h-lvh w-lvw`}
       >
-        <Provider>
-          <div className="flex flex-col h-full">
-            <Nav />
-            <main className="flex h-[95%]">
-              {/* <Sidebar /> */}
-              <div className=" w-full">{children}</div>
-            </main>
-          </div>
-        </Provider>
+        <Provider>{children}</Provider>
       </body>
     </html>
   );

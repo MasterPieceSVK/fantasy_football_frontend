@@ -15,7 +15,7 @@ export default function SmallFinishedMatchCard(props: Match) {
       <h4 className="text-2xl">{props.away_team}</h4>
       <h4>{formattedDateTime}</h4>
       <h4 className="mt-4">Odds</h4>
-      <div className="flex justify-evenly items-center w-full">
+      <div className="flex justify-evenly items-center w-full bg-blue-500/20 rounded-xl p-3">
         <h5
           className={`${
             props.score_home > props.score_away &&

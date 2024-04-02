@@ -5,6 +5,8 @@ import MatchCard from "@/components/FinsihedMatchCard";
 import SmallFinishedMatchCard from "@/components/SmallFinishedMatchCard";
 import SmallTimedMatchCard from "@/components/SmallTimedMatchesCard";
 import TimedMatchCard from "@/components/TimedMatchCard";
+import ErrorIcon from "@/components/icons/ErrorIcon";
+import LoadingSpinnerIcon from "@/components/icons/LoadingSpinnerIcon";
 import { useQuery } from "@tanstack/react-query";
 import axios, { AxiosError } from "axios";
 import Link from "next/link";
@@ -33,42 +35,62 @@ export default function Page() {
   const [finishedMatches, setFinishedMatches] = useState<Match[]>([]);
   const [timedMatches, setTimedMatches] = useState<Match[]>([]);
   const [showFinishedMatches, setShowFinishedMatches] = useState(false);
-  useEffect(() => {
-    axios
-      .get<MatchesArray[]>(`${process.env.NEXT_PUBLIC_BASEURL}/get-matches`)
-      .then((response) => {
-        setFinishedMatches(response.data[0].finishedMatches);
-        setTimedMatches(response.data[1].timedMatches);
-      })
-      .catch((e) => console.log(e));
-  }, []);
+  const { isPending, isError, data, error } = useQuery({
+    queryKey: ["upcoming-matches"],
+    queryFn: () =>
+      axios
+        .get<MatchesArray[]>(`${process.env.NEXT_PUBLIC_BASEURL}/get-matches`)
+        .then((response) => {
+          setFinishedMatches(response.data[0].finishedMatches);
+          setTimedMatches(response.data[1].timedMatches);
+          return response;
+        })
+        .catch((e) => console.log(e)),
+  });
 
-  // useEffect(() => {
-  //   console.log(finishedMatches);
-  //   console.log(timedMatches);
-  // }, [finishedMatches, timedMatches]);
+  if (isPending) {
+    return (
+      <div className="w-full h-full   ">
+        <div
+          className={` flex flex-col h-full  w-full justify-center items-center `}
+        >
+          <LoadingSpinnerIcon />
+        </div>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="w-full h-full   ">
+        <div
+          className={` flex flex-col h-full  w-full justify-center items-center `}
+        >
+          <ErrorIcon />
+          <h1>An Error Occured</h1>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="flex  flex-col w-full items-center gap-3">
-      {/* <div className=" hidden 2xl:flex w-full justify-center items-center">
-        <FinsihedMatchesContainer matches={finishedMatches} />
-      </div> */}
+    <div className="flex  flex-col w-full items-center gap-3 mt-10">
       <Link href={"/finished-matches"}>
-        <button className="btn hidden 2xl:flex">See finished Matches</button>
+        <h4 className="flex underline">See finished Matches</h4>
       </Link>
       <div className=" w-full  hidden 2xl:flex justify-center flex-col items-center">
         {timedMatches.map((match, i) => {
           return <TimedMatchCard {...match} key={i} />;
         })}
       </div>
-      <button
+      {/* <button
         className="btn btn-secondary"
         onClick={() => setShowFinishedMatches(!showFinishedMatches)}
       >
         {showFinishedMatches
           ? "Hide Finished Matches"
           : "Show Finished Matches"}
-      </button>
+      </button> */}
       <div
         className={` flex flex-col  2xl:hidden w-full justify-center items-center ${
           !showFinishedMatches && "hidden"
