@@ -93,8 +93,10 @@ export default function Sidebar({ user }: { user: string }) {
               </button>
             </Link>
           </li>
-
           <li className="mt-auto">
+            <div className="bg-red-300 text-black">BALANCE</div>
+          </li>
+          <li>
             <Link href={"/profile"}>
               <button
                 className={`btn btn-ghost btn-wide text-black text-xl ${

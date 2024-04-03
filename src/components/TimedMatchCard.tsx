@@ -8,15 +8,46 @@ import { z } from "zod";
 import WhiteDiamondIcon from "./icons/WhiteDiamondIcon";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import axios from "axios";
+import { CustomError } from "./LoginCard";
+import { headers } from "next/headers";
+import normalizeWinner from "@/helpers/normalizeWinner";
+import RefreshIcon from "./icons/RefreshIcon";
 
 const formSchema = z.object({
-  bet_amount: z.number(),
+  bet_amount: z.string(),
 });
+
 type FormInputs = z.infer<typeof formSchema>;
+type FormData = {
+  bet_amount: string;
+};
+
+type BetObj = {
+  bet_amount: string;
+  match_id: number;
+  bet_winner: string;
+  token: string;
+};
+
+type PlaceBetResponse = {
+  user_id: number;
+  bet_amount: number;
+  match_id: string;
+  bet_winner: string;
+  odd: number;
+  bet_id: number;
+};
 
 export default function TimedMatchCard(props: Match) {
   const [selected, setSelected] = useState("");
   const formattedDateTime = convertTime(props.utc_date);
+  const [token, setToken] = useState("");
+  const [success, setSuccess] = useState(false);
+  const [matchId, setMatchId] = useState<number>(0);
+  const [betWinner, setBetWinner] = useState<string>("");
+  const queryClient = useQueryClient();
 
   const {
     register,
@@ -26,18 +57,75 @@ export default function TimedMatchCard(props: Match) {
   } = useForm<FormInputs>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      bet_amount: 100,
+      bet_amount: "100",
     },
   });
 
-  function onSubmit(data: object) {
-    console.log(data);
-    setSelected((prevSelected) => {
-      console.log("previous selected", prevSelected);
-      const newSelected = "";
-      console.log("new selected", newSelected);
-      return newSelected;
-    });
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    setToken(token ?? "");
+  }, []);
+
+  const placeBetMutation = useMutation<PlaceBetResponse, CustomError, BetObj>({
+    mutationFn: async (input: BetObj) => {
+      const filteredInput = {
+        match_id: input.match_id,
+        bet_winner: input.bet_winner,
+        bet_amount: input.bet_amount,
+      };
+
+      return axios.post(
+        `${process.env.NEXT_PUBLIC_BASEURL}/place-bet`,
+        filteredInput,
+
+        { headers: { authorization: `Bearer ${input.token}` } }
+      );
+    },
+    onSuccess: () => {
+      setSuccess(true);
+    },
+    onError: (e) => {
+      if (e.response.data) {
+        setError("bet_amount", {
+          type: "manual",
+          message: e.response.data.message,
+        });
+      } else {
+        setError("bet_amount", {
+          type: "manual",
+          message: "Network Error",
+        });
+      }
+    },
+  });
+
+  useEffect(() => {
+    if (selected !== "") {
+      setBetWinner(selected);
+    }
+  }, [selected]);
+
+  function onSubmit(data: FormData) {
+    const winner = normalizeWinner(selected);
+    if (winner) {
+      const betObj: BetObj = {
+        ...data,
+        match_id: props.match_id,
+        bet_winner: winner,
+        token,
+      };
+      console.log(betObj);
+      placeBetMutation.mutate(betObj);
+    } else {
+      setError("bet_amount", {
+        type: "manual",
+        message: "An error happened.",
+      });
+    }
+  }
+
+  function handleRefresh() {
+    queryClient.invalidateQueries({ queryKey: ["upcoming-matches"] });
   }
 
   return (
@@ -91,7 +179,15 @@ export default function TimedMatchCard(props: Match) {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5 }}
         >
-          <h5 className="text-center text-xl">Selected: {selected}</h5>
+          <div className="flex justify-center ">
+            <h5 className="text-xl flex-grow text-center">
+              Selected: {selected}
+            </h5>
+            <button onClick={handleRefresh}>
+              <RefreshIcon />
+            </button>
+          </div>
+
           <h5 className="text-center text-xs ">
             Odd:{" "}
             {selected == "Home"
@@ -99,8 +195,8 @@ export default function TimedMatchCard(props: Match) {
               : selected == "Away"
               ? props.away_odd
               : props.draw_odd}
+            *
           </h5>
-
           <form
             onSubmit={handleSubmit(onSubmit)}
             className="flex justify-evenly items-center"
@@ -126,8 +222,13 @@ export default function TimedMatchCard(props: Match) {
               Bet
             </button>
           </form>
+          {errors.bet_amount && (
+            <p className="text-center text-sm text-red-500/90">
+              Error: {errors.bet_amount.message}
+            </p>
+          )}
           <h5 className="text-center text-xs">
-            Odd may change a little bit to the latest one
+            *Odd may change a little bit to the latest one
           </h5>
         </motion.div>
       )}

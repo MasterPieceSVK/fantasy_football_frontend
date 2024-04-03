@@ -39,7 +39,7 @@ export default function UnsettledBetCard(props: Bet) {
           </h6>
           <div className="flex items-center justify-center gap-2">
             <h5 className={`text-center text-xl`}>
-              +{props.bet_amount * props.odd}
+              +{(props.bet_amount * props.odd).toFixed(2)}
             </h5>
             <WhiteDiamondIcon size={15} />
           </div>

@@ -97,7 +97,7 @@ export default function Page() {
   }
 
   return (
-    <div className=" flex flex-col justify-center items-center gap-3">
+    <div className=" flex flex-col justify-center items-center gap-3 mt-10">
       <div className="w-full flex flex-col justify-center items-center">
         <h2 className="text-2xl">Active Bets</h2>
 

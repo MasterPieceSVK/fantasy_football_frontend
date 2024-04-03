@@ -35,6 +35,7 @@ export default function Page() {
   const [finishedMatches, setFinishedMatches] = useState<Match[]>([]);
   const [timedMatches, setTimedMatches] = useState<Match[]>([]);
   const [showFinishedMatches, setShowFinishedMatches] = useState(false);
+
   const { isPending, isError, data, error } = useQuery({
     queryKey: ["upcoming-matches"],
     queryFn: () =>
@@ -91,7 +92,7 @@ export default function Page() {
           ? "Hide Finished Matches"
           : "Show Finished Matches"}
       </button> */}
-      <div
+      {/* <div
         className={` flex flex-col  2xl:hidden w-full justify-center items-center ${
           !showFinishedMatches && "hidden"
         }`}
@@ -101,7 +102,7 @@ export default function Page() {
             return <SmallFinishedMatchCard {...match} key={i} />;
           }
         })}
-      </div>
+      </div> */}
       <Link href={"/finished-matches"}>
         <button
           className={`btn btn-secondary ${!showFinishedMatches && "hidden"}`}

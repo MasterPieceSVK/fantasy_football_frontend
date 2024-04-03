@@ -28,7 +28,15 @@ const formSchema = z.object({
       }
     ),
 });
-
+export type CustomError = {
+  response: {
+    status: number;
+    data: {
+      message: string;
+    };
+  };
+  message: string;
+};
 type FormInputs = z.infer<typeof formSchema>;
 
 export default function LoginCard() {
@@ -49,15 +57,7 @@ export default function LoginCard() {
       currency_amount: string;
     };
   };
-  type CustomError = {
-    response: {
-      status: number;
-      data: {
-        message: string;
-      };
-    };
-    message: string;
-  };
+
   const {
     register,
     handleSubmit,
