@@ -91,7 +91,7 @@ export default function SettledBetCard(props: Bet) {
               } text-center`}
             >
               {props.profit > 0 && "+"}
-              {props.profit}
+              {props.profit.toFixed(2)}
             </h5>
             <WhiteDiamondIcon size={18} />
           </div>

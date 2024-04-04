@@ -28,6 +28,7 @@ export default function Page() {
   const [token, setToken] = useState("");
   const [settledBets, setSettledBets] = useState<Bet[]>([]);
   const [unsettledBets, setUnsettledBets] = useState<Bet[]>([]);
+  const [fetched, setFetched] = useState(false);
 
   const router = useRouter();
   useEffect(() => {
@@ -52,6 +53,7 @@ export default function Page() {
         .then((response) => {
           setSettledBets(response.data[0].settledBets);
           setUnsettledBets(response.data[1].unsettledBets);
+          setFetched(true);
           return response;
         })
         .catch((e) => console.log(e)),
@@ -72,7 +74,7 @@ export default function Page() {
 
   if (isError) {
     return (
-      <div className="w-full h-full   ">
+      <div className="w-full h-full ">
         <div
           className={` flex flex-col h-full  w-full justify-center items-center gap-3`}
         >
@@ -83,7 +85,7 @@ export default function Page() {
     );
   }
 
-  if (settledBets.length == 0 && unsettledBets.length == 0) {
+  if (fetched && settledBets.length == 0 && unsettledBets.length == 0) {
     return (
       <div className="w-full h-full   ">
         <div

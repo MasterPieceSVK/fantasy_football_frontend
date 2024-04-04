@@ -13,6 +13,7 @@ import axios from "axios";
 import { CustomError } from "./LoginCard";
 import normalizeWinner from "@/helpers/normalizeWinner";
 import RefreshIcon from "./icons/RefreshIcon";
+import CloseIcon from "./icons/CloseIcon";
 
 const formSchema = z.object({
   bet_amount: z.string(),
@@ -43,7 +44,9 @@ export default function SmallTimedMatchCard(props: Match) {
   const [selected, setSelected] = useState("");
   const formattedDateTime = convertTime(props.utc_date);
   const [token, setToken] = useState("");
-  const [success, setSuccess] = useState(false);
+  const [success, setSuccess] = useState<Boolean>();
+  const [failure, setFailure] = useState<Boolean>();
+
   const [matchId, setMatchId] = useState<number>(0);
   const [betWinner, setBetWinner] = useState<string>("");
   const queryClient = useQueryClient();
@@ -81,9 +84,11 @@ export default function SmallTimedMatchCard(props: Match) {
       );
     },
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["balance"] });
       setSuccess(true);
     },
     onError: (e) => {
+      setFailure(false);
       if (e.response.data) {
         setError("bet_amount", {
           type: "manual",
@@ -194,7 +199,7 @@ export default function SmallTimedMatchCard(props: Match) {
           >
             <label className="input input-bordered flex items-center gap-2 flex-col">
               <div className="flex items-center gap-2 justify-center h-full">
-                <div className="translate-x-10">
+                <div className="translate-x-10 ">
                   <WhiteDiamondIcon size={20} />
                 </div>
                 <input
@@ -222,6 +227,27 @@ export default function SmallTimedMatchCard(props: Match) {
             *Odd may change a little bit to the latest one
           </h5>
         </motion.div>
+      )}
+
+      {success && (
+        <div className="bg-green-500 w-full rounded-md p-2 flex justify-between items-center">
+          <p className="text-black text-center text-sm">
+            Your bet was submitted. Good luck!
+          </p>
+          <button onClick={() => setSuccess(false)}>
+            <CloseIcon size={22} />
+          </button>
+        </div>
+      )}
+      {failure && (
+        <div className="bg-red-500 w-full rounded-md p-2 flex justify-between items-center">
+          <p className="text-black text-center text-sm">
+            An error occured with your bet.
+          </p>
+          <button onClick={() => setFailure(false)}>
+            <CloseIcon size={22} />
+          </button>
+        </div>
       )}
     </div>
   );

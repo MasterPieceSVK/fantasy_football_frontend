@@ -14,6 +14,7 @@ import { CustomError } from "./LoginCard";
 import { headers } from "next/headers";
 import normalizeWinner from "@/helpers/normalizeWinner";
 import RefreshIcon from "./icons/RefreshIcon";
+import CloseIcon from "./icons/CloseIcon";
 
 const formSchema = z.object({
   bet_amount: z.string(),
@@ -44,10 +45,11 @@ export default function TimedMatchCard(props: Match) {
   const [selected, setSelected] = useState("");
   const formattedDateTime = convertTime(props.utc_date);
   const [token, setToken] = useState("");
-  const [success, setSuccess] = useState(false);
   const [matchId, setMatchId] = useState<number>(0);
   const [betWinner, setBetWinner] = useState<string>("");
   const queryClient = useQueryClient();
+  const [success, setSuccess] = useState<Boolean>();
+  const [failure, setFailure] = useState<Boolean>();
 
   const {
     register,
@@ -82,9 +84,12 @@ export default function TimedMatchCard(props: Match) {
       );
     },
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["balance"] });
       setSuccess(true);
     },
     onError: (e) => {
+      setFailure(false);
+
       if (e.response.data) {
         setError("bet_amount", {
           type: "manual",
@@ -231,6 +236,26 @@ export default function TimedMatchCard(props: Match) {
             *Odd may change a little bit to the latest one
           </h5>
         </motion.div>
+      )}
+      {success && (
+        <div className="bg-green-500 w-full rounded-md p-2 flex justify-between items-center">
+          <p className="text-black text-center text-sm">
+            Your bet was submitted. Good luck!
+          </p>
+          <button onClick={() => setSuccess(false)}>
+            <CloseIcon size={22} />
+          </button>
+        </div>
+      )}
+      {failure && (
+        <div className="bg-red-500 w-full rounded-md p-2 flex justify-between items-center">
+          <p className="text-black text-center text-sm">
+            An error occured with your bet.
+          </p>
+          <button onClick={() => setFailure(false)}>
+            <CloseIcon size={22} />
+          </button>
+        </div>
       )}
     </div>
   );
