@@ -132,37 +132,55 @@ export default function SmallTimedMatchCard(props: Match) {
     queryClient.invalidateQueries({ queryKey: ["upcoming-matches"] });
   }
 
+  const timeString = props.utc_date;
+
+  const time = new Date(timeString);
+  const now = new Date();
+
+  const isOngoing = time < now;
+
   return (
     <div className="bg-secondary w-full xl:w-1/2 flex flex-col justify-center items-center p-4 gap-2 mx-2">
+      {isOngoing && <h1 className=" p-1 text-sm text-red-500">Ongoing</h1>}
       <h4 className="text-2xl">{props.home_team}</h4>
       <h4>VS</h4>
 
       <h4 className="text-2xl">{props.away_team}</h4>
       <h4>{date}</h4>
-      <div className="flex justify-evenly w-full bg-blue-500/30 rounded-xl">
+      <div
+        className={`${
+          isOngoing ? "bg-red-500/30" : "bg-blue-500/30 "
+        } flex justify-evenly w-full rounded-xl`}
+      >
         <h4
           className="text-lg text-center cursor-pointer"
-          onClick={() =>
-            selected == "Home" ? setSelected("") : setSelected("Home")
-          }
+          onClick={() => {
+            if (!isOngoing) {
+              selected == "Home" ? setSelected("") : setSelected("Home");
+            }
+          }}
         >
           {props.home_odd}
           <br></br>Home
         </h4>
         <h4
           className="text-lg text-center cursor-pointer"
-          onClick={() =>
-            selected == "Draw" ? setSelected("") : setSelected("Draw")
-          }
+          onClick={() => {
+            if (!isOngoing) {
+              selected == "Draw" ? setSelected("") : setSelected("Draw");
+            }
+          }}
         >
           {props.draw_odd}
           <br></br>Draw
         </h4>
         <h4
           className="text-lg text-center cursor-pointer"
-          onClick={() =>
-            selected == "Away" ? setSelected("") : setSelected("Away")
-          }
+          onClick={() => {
+            if (!isOngoing) {
+              selected == "Away" ? setSelected("") : setSelected("Away");
+            }
+          }}
         >
           {props.away_odd}
           <br></br>Away

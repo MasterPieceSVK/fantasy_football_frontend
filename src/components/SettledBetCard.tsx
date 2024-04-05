@@ -64,13 +64,13 @@ export default function SettledBetCard(props: Bet) {
           {props.odd}
         </h5>
 
-        <div>
+        <div className="flex flex-col justify-center items-center">
           <h5 className="text-center text-xl">Bet</h5>
           <div className="flex items-center justify-center gap-2">
+            <WhiteDiamondIcon size={20} />
             <h5 className="text-center text-xl">
               {props.bet_amount} <br></br>
             </h5>
-            <WhiteDiamondIcon size={20} />
           </div>
           <h5>
             (

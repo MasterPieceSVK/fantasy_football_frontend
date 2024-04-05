@@ -53,7 +53,7 @@ export default function Page() {
   }
 
   return (
-    <div className="flex  flex-col w-full items-center gap-3  ">
+    <div className="flex  flex-col w-full items-center gap-3 mt-5 ">
       <div
         className={` flex flex-col  2xl:hidden w-full justify-center items-center `}
       >

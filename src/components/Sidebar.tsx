@@ -14,6 +14,7 @@ import { useEffect, useState } from "react";
 import SidebarBalanceCard from "./SidebarBalanceCard";
 import UserIcon from "./icons/UserIcon";
 import SidebarUserIcon from "./icons/SidebarUserIcon";
+import BellIcon from "./icons/BellIcon";
 
 type BalanceResponse = {
   balance: number;
@@ -130,6 +131,18 @@ export default function Sidebar({ user }: { user: string }) {
               >
                 {" "}
                 <LeaderboardIcon /> Leaderboard
+              </button>
+            </Link>
+          </li>
+          <li>
+            <Link href={"/notifications"}>
+              <button
+                className={`btn btn-ghost btn-wide text-black text-xl ${
+                  pathName == "/notifications" && "bg-gray-400"
+                }`}
+              >
+                {" "}
+                <BellIcon size={28} /> Notifications
               </button>
             </Link>
           </li>
