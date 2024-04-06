@@ -252,7 +252,12 @@ export default function SmallTimedMatchCard(props: Match) {
           <p className="text-black text-center text-sm">
             Your bet was submitted. Good luck!
           </p>
-          <button onClick={() => setSuccess(false)}>
+          <button
+            onClick={() => {
+              setSuccess(false);
+              setSelected("");
+            }}
+          >
             <CloseIcon size={22} />
           </button>
         </div>
@@ -262,7 +267,12 @@ export default function SmallTimedMatchCard(props: Match) {
           <p className="text-black text-center text-sm">
             An error occured with your bet.
           </p>
-          <button onClick={() => setFailure(false)}>
+          <button
+            onClick={() => {
+              setFailure(false);
+              setSelected("");
+            }}
+          >
             <CloseIcon size={22} />
           </button>
         </div>

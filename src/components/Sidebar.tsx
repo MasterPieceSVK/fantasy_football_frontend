@@ -20,10 +20,14 @@ type BalanceResponse = {
   balance: number;
 };
 
+export type EligibleResponse = {
+  eligible: boolean;
+};
+
 export default function Sidebar({ user }: { user: string }) {
   const pathName = usePathname();
   const [token, setToken] = useState("");
-
+  const [activeNotifications, setActiveNotifications] = useState(false);
   const [balance, setBalance] = useState<number>();
 
   useEffect(() => {
@@ -47,6 +51,55 @@ export default function Sidebar({ user }: { user: string }) {
         .then((response) => {
           setBalance(response.data.balance);
           return response.data.balance;
+        })
+        .catch((e) => console.log(e)),
+    enabled: Boolean(token),
+    // staleTime: 0,
+  });
+
+  useQuery({
+    queryKey: ["does-user-have-notifications"],
+    queryFn: () =>
+      axios
+        .get(
+          `${process.env.NEXT_PUBLIC_BASEURL}/does-user-have-notifications`,
+          {
+            headers: {
+              authorization: `Bearer ${token}`,
+            },
+          }
+        )
+
+        .then((response) => {
+          if (response.status == 200) {
+            setActiveNotifications(true);
+          }
+        })
+        .catch((e) => console.log(e)),
+    enabled: Boolean(token),
+    // staleTime: 0,
+  });
+
+  useQuery({
+    queryKey: ["is-user-eligible-for-free-currency"],
+    queryFn: () =>
+      axios
+        .get<EligibleResponse>(
+          `${process.env.NEXT_PUBLIC_BASEURL}/add-currency/is-eligible`,
+          {
+            headers: {
+              authorization: `Bearer ${token}`,
+            },
+          }
+        )
+
+        .then((response) => {
+          if (response.data.eligible) {
+            setActiveNotifications(true);
+            return true;
+          } else {
+            return false;
+          }
         })
         .catch((e) => console.log(e)),
     enabled: Boolean(token),
@@ -141,8 +194,16 @@ export default function Sidebar({ user }: { user: string }) {
                   pathName == "/notifications" && "bg-gray-400"
                 }`}
               >
-                {" "}
-                <BellIcon size={28} /> Notifications
+                <div className="indicator">
+                  {activeNotifications && (
+                    <span className="indicator-item badge badge-primary border-red-500 bg-red-500  translate-x-12 -translate-y-4">
+                      New
+                    </span>
+                  )}
+                  <div className="flex">
+                    <BellIcon size={28} /> Notifications
+                  </div>
+                </div>
               </button>
             </Link>
           </li>

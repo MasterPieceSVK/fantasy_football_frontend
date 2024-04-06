@@ -132,9 +132,19 @@ export default function TimedMatchCard(props: Match) {
   function handleRefresh() {
     queryClient.invalidateQueries({ queryKey: ["upcoming-matches"] });
   }
+  const timeString = props.utc_date;
+
+  const time = new Date(timeString);
+  const now = new Date();
+
+  const isOngoing = time < now;
 
   return (
     <div className="bg-secondary p-6 w-1/2">
+      {isOngoing && (
+        <h1 className=" p-1 text-sm text-center text-red-500">Ongoing</h1>
+      )}
+
       <div className="flex justify-center">
         <div className="w-1/2 flex justify-end gap-3">
           <h3 className="text-2xl text-center text-wrap">{props.home_team}</h3>
@@ -148,29 +158,39 @@ export default function TimedMatchCard(props: Match) {
         <h5 className="text-sm">{props.league_name}</h5>
         <h5>{formattedDateTime}</h5>
       </div>
-      <div className="text-center flex justify-evenly items-center bg-blue-500/30 rounded-xl">
+      <div
+        className={`${
+          isOngoing ? "bg-red-500/30" : " bg-blue-500/30 "
+        } text-center flex justify-evenly items-centerrounded-xl`}
+      >
         <h5
-          onClick={() =>
-            selected == "Home" ? setSelected("") : setSelected("Home")
-          }
+          onClick={() => {
+            if (!isOngoing) {
+              selected == "Home" ? setSelected("") : setSelected("Home");
+            }
+          }}
           className="cursor-pointer"
         >
           Home<br></br>
           {props.home_odd}
         </h5>
         <h5
-          onClick={() =>
-            selected == "Draw" ? setSelected("") : setSelected("Draw")
-          }
+          onClick={() => {
+            if (!isOngoing) {
+              selected == "Draw" ? setSelected("") : setSelected("Draw");
+            }
+          }}
           className="cursor-pointer"
         >
           Draw<br></br>
           {props.draw_odd}
         </h5>
         <h5
-          onClick={() =>
-            selected == "Away" ? setSelected("") : setSelected("Away")
-          }
+          onClick={() => {
+            if (!isOngoing) {
+              selected == "Away" ? setSelected("") : setSelected("Away");
+            }
+          }}
           className="cursor-pointer"
         >
           Away<br></br>
@@ -242,7 +262,12 @@ export default function TimedMatchCard(props: Match) {
           <p className="text-black text-center text-sm">
             Your bet was submitted. Good luck!
           </p>
-          <button onClick={() => setSuccess(false)}>
+          <button
+            onClick={() => {
+              setSuccess(false);
+              setSelected("");
+            }}
+          >
             <CloseIcon size={22} />
           </button>
         </div>
@@ -252,7 +277,12 @@ export default function TimedMatchCard(props: Match) {
           <p className="text-black text-center text-sm">
             An error occured with your bet.
           </p>
-          <button onClick={() => setFailure(false)}>
+          <button
+            onClick={() => {
+              setFailure(false);
+              setSelected("");
+            }}
+          >
             <CloseIcon size={22} />
           </button>
         </div>

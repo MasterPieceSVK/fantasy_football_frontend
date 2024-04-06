@@ -1,6 +1,9 @@
 import { NotificationsResponse } from "@/app/(main)/notifications/page";
+import WhiteDiamondIcon from "./icons/WhiteDiamondIcon";
 
 export default function NotificationsCard(props: NotificationsResponse) {
+  const profit = Number(props.profit);
+
   return (
     <div className="flex bg-secondary/30 text-white p-4 w-full xl:w-1/2  justify-center items-center text-center">
       <article>
@@ -8,7 +11,7 @@ export default function NotificationsCard(props: NotificationsResponse) {
         <span
           className={props.bet_outcome == 1 ? `text-green-500` : "text-red-500"}
         >
-          {props.profit}
+          {Math.abs(profit)}
         </span>{" "}
         in the{" "}
         <span className="font-semibold">
@@ -53,7 +56,7 @@ export default function NotificationsCard(props: NotificationsResponse) {
             </p>
           </div>
           <div className="flex flex-col items-center justify-center">
-            <p>Odd</p>
+            <p>Winning Odd</p>
             <p className="underline">
               {props.winner == "HOME_TEAM"
                 ? props.home_odd

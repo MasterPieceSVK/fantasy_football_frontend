@@ -15,19 +15,24 @@ import NotificationsCard from "@/components/NotificationsCard";
 import TrashIcon from "@/components/icons/TrashIcon";
 import { CustomError } from "@/components/LoginCard";
 import NeutralSmileyIcon from "@/components/icons/NeutralSmileyIcon";
+import { EligibleResponse } from "@/components/Sidebar";
+import ClaimFreeCurrencyCard from "@/components/ClaimFreeCurrencyCard";
+import FaultyClaim from "@/components/FaultyClaim";
+import SuccessfullClaim from "@/components/SuccessfullClaim";
 export type NotificationsResponse = {
   bet_notification_id: number;
   user_id: number;
   bet_outcome: number;
-  profit: string;
+  profit: string | number;
 } & Match;
 
 export default function Page() {
-  const [token, setToken] = useState("");
+  const [token, setToken] = useState(localStorage.getItem("token"));
   const [success, setSuccess] = useState(false);
   const [empty, setEmpty] = useState(false);
-
+  const [freeCurency, setFreeCurrency] = useState(false);
   const queryClient = useQueryClient();
+  const [claimed, setClaimed] = useState(false);
 
   useEffect(() => {
     const userToken = localStorage.getItem("token");
@@ -67,6 +72,31 @@ export default function Page() {
     // staleTime: 0,
   });
 
+  const eligibilityFetch = useQuery({
+    queryKey: ["is-user-eligible-for-free-currency"],
+    queryFn: () =>
+      axios
+        .get<EligibleResponse>(
+          `${process.env.NEXT_PUBLIC_BASEURL}/add-currency/is-eligible`,
+          {
+            headers: {
+              authorization: `Bearer ${token}`,
+            },
+          }
+        )
+
+        .then((response) => {
+          if (response.data.eligible) {
+            setFreeCurrency(true);
+            return true;
+          } else {
+            return false;
+          }
+        })
+        .catch((e) => console.log(e)),
+    enabled: Boolean(token),
+  });
+
   const notificationDeleteMutation = useMutation({
     mutationFn: async () => {
       return axios.delete(
@@ -80,7 +110,40 @@ export default function Page() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["notifications"] });
+      queryClient.invalidateQueries({
+        queryKey: ["does-user-have-notifications"],
+      });
+
       setSuccess(true);
+    },
+    onError: (e) => {
+      console.log(e);
+    },
+  });
+
+  const freeCurrencyClaimMutation = useMutation({
+    mutationFn: async () => {
+      return axios.put(
+        `${process.env.NEXT_PUBLIC_BASEURL}/add-currency`,
+        {},
+        {
+          headers: {
+            authorization: `Bearer ${token}`,
+          },
+        }
+      );
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["does-user-have-notifications"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["is-user-eligible-for-free-currency"],
+      });
+      queryClient.invalidateQueries({ queryKey: ["balance"] });
+
+      setFreeCurrency(false);
+      setClaimed(true);
     },
     onError: (e) => {
       console.log(e);
@@ -90,6 +153,12 @@ export default function Page() {
   function handleNotificationDelete() {
     if (Boolean(token)) {
       notificationDeleteMutation.mutate();
+    }
+  }
+
+  function handleFreeCurrencyClaim() {
+    if (Boolean(token)) {
+      freeCurrencyClaimMutation.mutate();
     }
   }
 
@@ -105,7 +174,7 @@ export default function Page() {
     );
   }
 
-  if (empty) {
+  if (empty && !freeCurency) {
     return (
       <div className="w-full h-full ">
         <div
@@ -139,6 +208,16 @@ export default function Page() {
       >
         <TrashIcon size={20} />
       </button>
+      <div className=" flex flex-col items-center  mt-6">
+        {freeCurency && (
+          <ClaimFreeCurrencyCard
+            handleFreeCurrencyClaim={handleFreeCurrencyClaim}
+            isLoading={eligibilityFetch.isFetching}
+          />
+        )}
+        {claimed && <SuccessfullClaim />}
+        {freeCurrencyClaimMutation.isError && <FaultyClaim />}
+      </div>
       <div className=" flex flex-col items-center  mt-6">
         {notificationsArray
           ? notificationsArray.map((notification) => {
