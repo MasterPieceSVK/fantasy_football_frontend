@@ -113,7 +113,9 @@ export default function Page() {
       queryClient.invalidateQueries({
         queryKey: ["does-user-have-notifications"],
       });
-
+      queryClient.invalidateQueries({
+        queryKey: ["is-user-eligible-for-free-currency"],
+      });
       setSuccess(true);
     },
     onError: (e) => {

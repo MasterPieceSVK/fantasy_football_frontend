@@ -14,7 +14,7 @@ export default function HomeFeatures() {
           }}
           transition={{ duration: 0.8 }}
         >
-          <TrophyIcon />
+          <TrophyIcon size={250} />
           <h3 className="text-2xl text-center">Leaderboards</h3>
         </motion.div>
         {/* <div className="divider divider-primary xl:divider-horizontal"></div> */}
@@ -47,7 +47,7 @@ export default function HomeFeatures() {
           animate={{ y: 0 }}
           transition={{ duration: 0.8 }}
         >
-          <TrophyIcon />
+          <TrophyIcon size={250} />
           <h3 className="text-2xl text-center">Leaderboards</h3>
         </motion.div>
         {/* <div className="divider divider-primary xl:divider-horizontal"></div> */}
@@ -78,7 +78,7 @@ export default function HomeFeatures() {
           animate={{ x: 0 }}
           transition={{ duration: 0.8 }}
         >
-          <TrophyIcon />
+          <TrophyIcon size={250} />
           <h3 className="text-2xl text-center">Leaderboards</h3>
         </motion.div>
         {/* <div className="divider divider-primary xl:divider-horizontal"></div> */}

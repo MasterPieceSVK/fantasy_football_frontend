@@ -1,12 +1,16 @@
 import React from "react";
 import type { SVGProps } from "react";
 
-export default function TrophyIcon(props: SVGProps<SVGSVGElement>) {
+type PropType = {
+  size: number;
+} & SVGProps<SVGSVGElement>;
+
+export default function TrophyIcon(props: PropType) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      width={250}
-      height={250}
+      width={props.size}
+      height={props.size}
       viewBox="0 0 512 512"
       {...props}
     >
